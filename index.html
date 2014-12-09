@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html>
 
+<script type="text/javascript" src="http://map.geoq.cn/ags27/jsapi/"></script>
+<script type="text/javascript">
+  dojo.require("esri.map");
+  dojo.require("dijit.layout.ContentPane");
+  dojo.require("dijit.layout.BorderContainer");
+  var map;
+  function Init() {
+    dojo.style(dojo.byId("map"), { width: dojo.contentBox("map").w + "px", height: (esri.documentBox.h - dojo.contentBox("navTable").h - 40) + "px" });
+    map = new esri.Map("map");
+    var layer = new esri.layers.ArcGISTiledMapServiceLayer("http://cache1.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineStreetColor/MapServer");
+    map.addLayer(layer);
+var resizeTimer;
+                            dojo.connect(map, 'onLoad', function(theMap) {
+                              dojo.connect(dijit.byId('map'), 'resize', function() {
+                                clearTimeout(resizeTimer);
+                                resizeTimer = setTimeout(function() {
+                                  map.resize();
+                                  map.reposition();
+                                 }, 500);
+                               });
+                             });
+  }
+  dojo.addOnLoad(Init);
+</script>
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -30,6 +54,8 @@
         <p>my first blog on GitHub.</p>
       </section>
     </div>
+    <div id="map" style="margin:auto;width:97%;border:1px solid #000;"></div>
+
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
